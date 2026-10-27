@@ -104,7 +104,45 @@
   }
 }
 
+/* Révélations au défilement */
+.revele {
+  transition: opacity 900ms cubic-bezier(0.22, 1, 0.36, 1), transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 1100ms cubic-bezier(0.76, 0, 0.24, 1);
+}
+.revele-monte { opacity: 0; transform: translateY(40px); }
+.revele-fondu { opacity: 0; }
+.revele-rideau { clip-path: inset(0 0 100% 0); }
+.revele.est-visible { opacity: 1; transform: none; clip-path: inset(0 0 0 0); }
+
+/* Carrousel : zoom lent (« Ken Burns ») de la photo active */
+@keyframes kenburns {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.12); }
+}
+.zoom-lent { animation: kenburns 9s ease-out both; }
+
+/* Titre dévoilé ligne par ligne */
+@keyframes ligne {
+  from { transform: translateY(105%); }
+  to { transform: translateY(0); }
+}
+.ligne-masque { display: block; overflow: hidden; padding-bottom: 0.08em; }
+.ligne-masque > span { display: block; animation: ligne 1000ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Barre de progression du carrousel */
+@keyframes progression {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.barre-progression { transform-origin: left; animation: progression linear both; }
+
+/* Défilement horizontal sans barre visible */
+.sans-barre { scrollbar-width: none; }
+.sans-barre::-webkit-scrollbar { display: none; }
+
 @media (prefers-reduced-motion: reduce) {
+  .zoom-lent, .ligne-masque > span { animation: none !important; }
+  .revele { opacity: 1 !important; transform: none !important; clip-path: none !important; }
   *,
   *::before,
   *::after {

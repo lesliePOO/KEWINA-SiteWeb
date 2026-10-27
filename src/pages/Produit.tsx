@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { AlertCircle, ArrowLeft, ArrowRight, Check, MessageCircle, Minus, PackageCheck, Plus, Ruler, Truck } from 'lucide-react';
+import { AlertCircle, ArrowLeft, ArrowRight, Check, Expand, MessageCircle, Minus, PackageCheck, Plus, Ruler, Truck } from 'lucide-react';
 import { formaterPrix } from '../config/site';
 import { useCatalogue } from '../context/CatalogueContext';
 import { usePanier } from '../context/PanierContext';
 import { BoutonFavori } from '../components/produit/BoutonFavori';
 import { CarteProduit } from '../components/produit/CarteProduit';
 import { VisuelProduit } from '../components/produit/VisuelProduit';
+import { Visionneuse } from '../components/produit/Visionneuse';
 import { couleursDe, etatStock, taillesDe, varianteDe } from '../components/produit/outils';
 import { ErreurCatalogue } from '../components/ui/Etats';
 import { useEnvoiDemande } from '../lib/useEnvoiDemande';
@@ -29,6 +30,18 @@ export function Produit() {
   const [onglet, setOnglet] = useState<(typeof ONGLETS)[number]>('Description');
   const [erreurChoix, setErreurChoix] = useState(false);
   const [ajoute, setAjoute] = useState(false);
+  const [pleinEcran, setPleinEcran] = useState(false);
+  const [loupe, setLoupe] = useState<{ x: number; y: number } | null>(null);
+  // Barre d'achat collante sur mobile : visible quand le bouton principal sort de l'écran.
+  const zoneAchat = useRef<HTMLDivElement>(null);
+  const [barreVisible, setBarreVisible] = useState(false);
+  useEffect(() => {
+    const el = zoneAchat.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const obs = new IntersectionObserver(([e]) => setBarreVisible(!e.isIntersecting && e.boundingClientRect.top < 0));
+    obs.observe(el);
+    return () => obs.disconnect();
+  });
 
   const couleurs = useMemo(() => (produit ? couleursDe(produit) : []), [produit]);
   const tailles = useMemo(() => (produit ? taillesDe(produit) : []), [produit]);
@@ -109,9 +122,33 @@ export function Produit() {
               ))}
             </div>
             <div className="group relative aspect-[4/5] flex-1 overflow-hidden bg-brun">
-              <div key={`${vue}-${couleur}`} className="absolute inset-0 animate-apparition">
-                <VisuelProduit produit={produit} index={vue} couleur={couleur} sizes="(min-width: 1024px) 50vw, 100vw" prioritaire />
-              </div>
+              <button
+                type="button"
+                className={`absolute inset-0 block w-full ${loupe ? 'cursor-zoom-in' : ''}`}
+                aria-label="Agrandir la photo en plein écran"
+                onClick={() => {
+                  setLoupe(null);
+                  setPleinEcran(true);
+                }}
+                onPointerMove={(e) => {
+                  if (e.pointerType !== 'mouse') return;
+                  const r = e.currentTarget.getBoundingClientRect();
+                  setLoupe({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
+                }}
+                onPointerLeave={() => setLoupe(null)}
+              >
+                <div key={`${vue}-${couleur}`} className="absolute inset-0 animate-apparition">
+                  <div
+                    className="h-full w-full transition-transform duration-base ease-etoffe"
+                    style={loupe ? { transform: 'scale(1.9)', transformOrigin: `${loupe.x}% ${loupe.y}%` } : undefined}
+                  >
+                    <VisuelProduit produit={produit} index={vue} couleur={couleur} sizes="(min-width: 1024px) 50vw, 100vw" prioritaire />
+                  </div>
+                </div>
+              </button>
+              <span className="pointer-events-none absolute bottom-4 right-4 grid h-10 w-10 place-items-center rounded-full bg-blanc-casse/90 text-brun" aria-hidden="true">
+                <Expand size={16} strokeWidth={1.5} />
+              </span>
               <BoutonFavori slug={produit.slug} nom={produit.nom} className="absolute right-4 top-4" />
               <button type="button" onClick={() => setVue((vue + NB_VUES - 1) % NB_VUES)} className="absolute left-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-blanc-casse/90" aria-label="Vue précédente">
                 <ArrowLeft size={18} strokeWidth={1.5} />
@@ -200,7 +237,7 @@ export function Produit() {
               {variante && etat === 'disponible' && <p className="flex items-center gap-2 text-dispo"><Check size={16} /> Disponible</p>}
             </div>
 
-            <div className="flex gap-3">
+            <div ref={zoneAchat} className="flex gap-3">
               <div className="flex h-[52px] items-center border border-bord-controle bg-blanc-casse">
                 <button type="button" className="grid h-full w-11 place-items-center" aria-label="Retirer un" onClick={() => setQuantite(Math.max(1, quantite - 1))}><Minus size={16} /></button>
                 <output className="w-8 text-center tabular-nums" aria-live="polite">{quantite}</output>
@@ -255,13 +292,49 @@ export function Produit() {
                 )}
                 {onglet === 'Livraison & retours' && (
                   <p>
-                    Les zones, délais et frais de livraison sont confirmés par l'équipe KEWINA sur WhatsApp avant toute validation. Les conditions de
-                    retour et d'échange seront publiées dans la <Link to="/faq" className="underline underline-offset-4">FAQ</Link>.
+                    Livraison partout au Cameroun et à l'international : les délais et frais sont confirmés par l'équipe KEWINA sur WhatsApp avant toute
+                    validation. Les articles ne sont ni repris ni échangés — consultez le <Link to="/faq#tailles" className="underline underline-offset-4">guide des tailles</Link> avant de commander.
                   </p>
                 )}
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {pleinEcran && (
+        <Visionneuse produit={produit} vue={vue} nbVues={NB_VUES} couleur={couleur} surVue={setVue} surFermer={() => setPleinEcran(false)} />
+      )}
+
+      {/* Barre d'achat collante (mobile), au-dessus de la navigation du bas */}
+      <div
+        className={`fixed inset-x-0 z-20 border-t border-ligne bg-blanc-casse/95 px-4 py-3 backdrop-blur transition-transform duration-base ease-etoffe lg:hidden ${
+          barreVisible ? 'translate-y-0' : 'pointer-events-none translate-y-[180%]'
+        }`}
+        style={{ bottom: 'calc(4rem + env(safe-area-inset-bottom))' }}
+        aria-hidden={!barreVisible}
+      >
+        <div className="flex items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-display text-lg leading-tight">{produit.nom}</p>
+            <p className="text-sm tabular-nums text-encre-douce">{formaterPrix(produit.prix)}</p>
+          </div>
+          <button
+            type="button"
+            tabIndex={barreVisible ? 0 : -1}
+            onClick={() => {
+              if (manque) {
+                setErreurChoix(true);
+                zoneAchat.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+              }
+              surAjout();
+            }}
+            disabled={etat === 'epuise'}
+            className="btn btn-plein min-h-[46px] px-5 disabled:opacity-50"
+          >
+            {manque ? `Choisir ${manque.replace('une ', 'la ')}` : etat === 'epuise' ? 'Épuisé' : ajoute ? 'Ajouté ✓' : 'Ajouter'}
+          </button>
         </div>
       </div>
 
