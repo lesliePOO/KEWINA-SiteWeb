@@ -4,7 +4,8 @@ import { ChevronDown, Search, SlidersHorizontal, X } from 'lucide-react';
 import { useCatalogue } from '../context/CatalogueContext';
 import { CarteProduit } from '../components/produit/CarteProduit';
 import { couleursDe, stockTotal, taillesDe, trierTailles } from '../components/produit/outils';
-import { Etoffe } from '../components/ui/Etoffe';
+import { Photo } from '../components/ui/Photo';
+import { visuels } from '../config/visuels';
 import { ChargementGrille, ErreurCatalogue, EtatVide } from '../components/ui/Etats';
 import type { Genre, Produit } from '../types/catalogue';
 
@@ -163,7 +164,7 @@ export function Boutique() {
   return (
     <>
       <section className="zone-nuit relative isolate overflow-hidden bg-noir text-creme">
-        <Etoffe ton="terre" echelle={1.2} className="absolute inset-0 -z-10 opacity-80" />
+        <Photo src={visuels.tissus.src} alt="" ton="terre" prioritaire position="center 40%" className="absolute inset-0 -z-10" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-noir via-noir/70 to-noir/10" />
         <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-16 lg:px-12 lg:pb-14 lg:pt-24">
           <h1 className="font-display text-[42px] font-medium leading-none lg:text-6xl">Nos collections</h1>

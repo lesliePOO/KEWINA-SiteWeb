@@ -3,6 +3,7 @@ import { Layout } from './components/layout/Layout';
 import { Accueil } from './pages/Accueil';
 import { Boutique } from './pages/Boutique';
 import { Collections } from './pages/Collections';
+import { Credits } from './pages/Credits';
 import { CommandePrete } from './pages/CommandePrete';
 import { EnPreparation, PageIntrouvable } from './pages/EnPreparation';
 import { Favoris } from './pages/Favoris';
@@ -26,6 +27,7 @@ export function App() {
         <Route path="faq" element={<EnPreparation titre="FAQ et livraison" />} />
         <Route path="mentions-legales" element={<EnPreparation titre="Mentions légales" />} />
         <Route path="confidentialite" element={<EnPreparation titre="Confidentialité" />} />
+        <Route path="credits-photos" element={<Credits />} />
         <Route path="*" element={<PageIntrouvable />} />
       </Route>
     </Routes>

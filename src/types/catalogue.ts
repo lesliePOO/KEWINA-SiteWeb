@@ -11,6 +11,7 @@ export interface Collection {
   titre: string;
   description: string | null;
   image_url: string | null;
+  image_credit: string | null;
   est_demo: boolean;
   ordre: number;
 }
@@ -19,6 +20,7 @@ export interface ImageProduit {
   url: string;
   alt: string;
   ordre: number;
+  credit: string | null;
 }
 
 export interface Variante {

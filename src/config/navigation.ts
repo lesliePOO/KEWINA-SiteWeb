@@ -29,4 +29,5 @@ export const navigationAide: LienNav[] = [
 export const navigationLegale: LienNav[] = [
   { libelle: 'Mentions légales', chemin: '/mentions-legales' },
   { libelle: 'Confidentialité', chemin: '/confidentialite' },
+  { libelle: 'Crédits photos', chemin: '/credits-photos' },
 ];

@@ -76,6 +76,11 @@
     @apply inline-flex items-center rounded-sm border border-dashed border-current px-2 py-0.5 font-ui text-[10px] font-medium uppercase tracking-bouton;
   }
 
+  /* Photos d'illustration : couleurs légèrement réchauffées pour s'accorder au noir, bronze et crème. */
+  .photo-harmonisee {
+    filter: saturate(0.82) contrast(1.06) sepia(0.12);
+  }
+
   /* Case de taille épuisée : barrée en diagonale. */
   .taille-epuisee {
     background: linear-gradient(to top right, transparent calc(50% - 0.5px), #9a8574 50%, transparent calc(50% + 0.5px)), #f5efe5;

@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Gem, Scissors, Sparkles } from 'lucide-react';
 import { useCatalogue } from '../context/CatalogueContext';
 import { CarteProduit } from '../components/produit/CarteProduit';
-import { Etoffe, type TonEtoffe } from '../components/ui/Etoffe';
+import type { TonEtoffe } from '../components/ui/Etoffe';
+import { Photo } from '../components/ui/Photo';
+import { visuels, type Visuel } from '../config/visuels';
 import { ChargementGrille, ErreurCatalogue } from '../components/ui/Etats';
 import { useMouvementReduit } from '../lib/mouvement';
 
@@ -12,6 +14,8 @@ interface Diapo {
   texte: string;
   action: { libelle: string; vers: string };
   ton: TonEtoffe;
+  visuel: Visuel;
+  position: string;
 }
 
 const DIAPOS: Diapo[] = [
@@ -20,18 +24,24 @@ const DIAPOS: Diapo[] = [
     texte: "Des créations inspirées de nos racines, pensées pour la femme et l'homme d'aujourd'hui.",
     action: { libelle: 'Découvrir la collection', vers: '/boutique' },
     ton: 'wax',
+    visuel: visuels.hero[0],
+    position: 'center 30%',
   },
   {
     titre: ["L'élégance", 'a du caractère'],
     texte: 'Des silhouettes affirmées, coupées dans des tissus choisis pour durer.',
     action: { libelle: 'Collection Femme', vers: '/boutique?genre=femme' },
     ton: 'terre',
+    visuel: visuels.hero[1],
+    position: 'center 20%',
   },
   {
     titre: ['Des matières,', 'un héritage vivant'],
     texte: 'Pagne, wax, lin : chaque pièce raconte un savoir-faire transmis.',
     action: { libelle: 'Voir les collections', vers: '/collections' },
     ton: 'bordeaux',
+    visuel: visuels.hero[2],
+    position: 'center 25%',
   },
 ];
 
@@ -65,19 +75,21 @@ function Hero() {
           }`}
           aria-hidden="true"
         >
-          <Etoffe ton={d.ton} echelle={1.3} className="h-full w-full" />
+          <Photo src={d.visuel.src} alt="" ton={d.ton} prioritaire={i === 0} sizes="(min-width: 1024px) 72vw, 100vw" position={d.position} className="h-full w-full" />
         </div>
       ))}
+      {/* Mobile : la photo reste visible en haut, le texte se lit sur le dégradé du bas. */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-noir via-noir/75 to-noir/5 lg:hidden" aria-hidden="true" />
       <div
-        className="absolute inset-0 -z-10"
+        className="absolute inset-0 -z-10 hidden lg:block"
         style={{
           background:
-            'linear-gradient(90deg, #0b0b0b 0%, rgba(11,11,11,0.92) 28%, rgba(11,11,11,0.35) 62%, rgba(11,11,11,0.15) 100%), linear-gradient(0deg, rgba(11,11,11,0.9) 0%, rgba(11,11,11,0) 40%)',
+            'linear-gradient(90deg, #0b0b0b 0%, rgba(11,11,11,0.92) 26%, rgba(11,11,11,0.3) 58%, rgba(11,11,11,0.1) 100%), linear-gradient(0deg, rgba(11,11,11,0.85) 0%, rgba(11,11,11,0) 40%)',
         }}
         aria-hidden="true"
       />
 
-      <div className="mx-auto grid min-h-[620px] max-w-[1440px] grid-cols-1 px-4 pb-10 pt-24 lg:min-h-[680px] lg:grid-cols-[1fr_auto] lg:px-12 lg:pb-12 lg:pt-28">
+      <div className="mx-auto grid min-h-[640px] max-w-[1440px] grid-cols-1 px-4 pb-10 pt-64 lg:min-h-[680px] lg:grid-cols-[1fr_auto] lg:px-12 lg:pb-12 lg:pt-28">
         <div className="flex max-w-xl flex-col justify-end gap-6" aria-live="polite">
           <span className="font-display text-sm uppercase tracking-surtitre text-bronze">KEWINA</span>
           <h1 key={actif} className="animate-apparition font-display text-[46px] font-medium leading-[0.98] sm:text-[60px] lg:text-[76px]">
@@ -130,16 +142,16 @@ function Hero() {
           </div>
         </div>
       </div>
-      <span className="absolute bottom-3 right-4 text-[10px] uppercase tracking-bouton text-sable/70 lg:right-12">Photo de campagne à fournir</span>
+      <span className="absolute bottom-3 right-4 text-[10px] uppercase tracking-bouton text-sable/70 lg:right-12">Photo d'illustration — {DIAPOS[actif].visuel.credit} / Unsplash</span>
     </section>
   );
 }
 
-function BlocGenre({ titre, sousTitre, vers, ton }: { titre: string; sousTitre: string; vers: string; ton: TonEtoffe }) {
+function BlocGenre({ titre, sousTitre, vers, ton, visuel }: { titre: string; sousTitre: string; vers: string; ton: TonEtoffe; visuel: Visuel }) {
   return (
     <Link to={vers} className="group relative block aspect-[4/5] overflow-hidden sm:aspect-[16/11]">
       <div className="absolute inset-0 transition-transform duration-lente ease-etoffe group-hover:scale-[1.04]">
-        <Etoffe ton={ton} echelle={1.1} className="h-full w-full" />
+        <Photo src={visuel.src} alt={visuel.alt} ton={ton} sizes="(min-width: 640px) 50vw, 100vw" position="center 25%" className="h-full w-full" />
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-noir/85 via-noir/20 to-transparent" />
       <div className="absolute bottom-6 left-6 right-6 text-creme lg:bottom-10 lg:left-10">
@@ -162,8 +174,8 @@ export function Accueil() {
       <Hero />
 
       <section className="mx-auto grid max-w-[1440px] gap-4 px-4 py-10 sm:grid-cols-2 lg:gap-6 lg:px-12 lg:py-14">
-        <BlocGenre titre="Femme" sousTitre="Élégance & caractère" vers="/boutique?genre=femme" ton="terre" />
-        <BlocGenre titre="Homme" sousTitre="Allure & authenticité" vers="/boutique?genre=homme" ton="nuit" />
+        <BlocGenre titre="Femme" sousTitre="Élégance & caractère" vers="/boutique?genre=femme" ton="terre" visuel={visuels.femme} />
+        <BlocGenre titre="Homme" sousTitre="Allure & authenticité" vers="/boutique?genre=homme" ton="nuit" visuel={visuels.homme} />
       </section>
 
       <section className="mx-auto max-w-[1440px] px-4 pb-16 lg:px-12 lg:pb-24">
@@ -191,7 +203,7 @@ export function Accueil() {
       <section className="zone-nuit bg-noir text-creme">
         <div className="mx-auto grid max-w-[1440px] lg:grid-cols-[1.1fr_1fr]">
           <div className="relative min-h-[300px] lg:min-h-[420px]">
-            <Etoffe ton="wax" echelle={0.9} mention="Photo d'atelier à fournir" className="absolute inset-0" />
+            <Photo src={visuels.savoirFaire.src} alt={visuels.savoirFaire.alt} ton="wax" sizes="(min-width: 1024px) 55vw, 100vw" className="absolute inset-0" />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-noir/70 lg:to-noir" />
           </div>
           <div className="flex flex-col justify-center gap-6 px-4 py-14 lg:px-12">

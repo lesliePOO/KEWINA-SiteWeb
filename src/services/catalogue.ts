@@ -11,7 +11,7 @@ export interface DonneesCatalogue {
 const CHAMPS_PRODUIT =
   'id, slug, nom, description, matieres, confection, entretien, genre, prix, nouveaute, est_demo, created_at,' +
   ' categorie:categories(slug, nom), collection:collections(slug, titre),' +
-  ' images:produit_images(url, alt, ordre), variantes(id, taille, couleur, couleur_hex, stock, actif)';
+  ' images:produit_images(url, alt, ordre, credit), variantes(id, taille, couleur, couleur_hex, stock, actif)';
 
 function exigerClient() {
   if (!supabase) throw new Error('La connexion à la boutique n’est pas configurée.');
@@ -23,7 +23,7 @@ export async function chargerCatalogue(): Promise<DonneesCatalogue> {
   const [produits, categories, collections, reglages] = await Promise.all([
     client.from('produits').select(CHAMPS_PRODUIT).eq('statut', 'actif').order('created_at', { ascending: false }),
     client.from('categories').select('slug, nom, ordre').order('ordre'),
-    client.from('collections').select('slug, titre, description, image_url, est_demo, ordre').eq('actif', true).order('ordre'),
+    client.from('collections').select('slug, titre, description, image_url, image_credit, est_demo, ordre').eq('actif', true).order('ordre'),
     client.from('reglages').select('cle, valeur').eq('cle', 'seuil_stock_faible').maybeSingle(),
   ]);
 

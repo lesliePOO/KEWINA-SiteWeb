@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useCatalogue } from '../context/CatalogueContext';
 import { Etoffe, type TonEtoffe } from '../components/ui/Etoffe';
+import { Photo } from '../components/ui/Photo';
+import { visuels } from '../config/visuels';
 import { ChargementGrille, ErreurCatalogue, EtatVide } from '../components/ui/Etats';
 
 const TONS: TonEtoffe[] = ['wax', 'bordeaux', 'terre', 'nuit'];
@@ -12,7 +14,7 @@ export function Collections() {
   return (
     <>
       <section className="zone-nuit relative isolate overflow-hidden bg-noir text-creme">
-        <Etoffe ton="bordeaux" echelle={1.2} className="absolute inset-0 -z-10 opacity-80" />
+        <Photo src={visuels.tissus.src} alt="" ton="bordeaux" prioritaire position="center 60%" className="absolute inset-0 -z-10" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-noir via-noir/70 to-noir/10" />
         <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-16 lg:px-12 lg:pb-14 lg:pt-24">
           <h1 className="font-display text-[42px] font-medium leading-none lg:text-6xl">Les collections</h1>
@@ -35,7 +37,7 @@ export function Collections() {
                 <Link key={c.slug} to={`/boutique?collection=${c.slug}`} className="group relative block aspect-[4/5] overflow-hidden sm:aspect-[5/6]">
                   <div className="absolute inset-0 transition-transform duration-lente ease-etoffe group-hover:scale-[1.04]">
                     {c.image_url ? (
-                      <img src={c.image_url} alt="" className="h-full w-full object-cover" loading="lazy" />
+                      <Photo src={c.image_url} alt={c.titre} ton={TONS[i % TONS.length]} sizes="(min-width: 640px) 50vw, 100vw" className="h-full w-full" />
                     ) : (
                       <Etoffe ton={TONS[i % TONS.length]} echelle={1.1} className="h-full w-full" />
                     )}

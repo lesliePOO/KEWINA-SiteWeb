@@ -13,7 +13,6 @@ import { useEnvoiDemande } from '../lib/useEnvoiDemande';
 import { EnPreparation } from './EnPreparation';
 
 const ONGLETS = ['Description', 'Détails', 'Livraison & retours'] as const;
-const NB_VUES = 4;
 
 export function Produit() {
   const { slug = '' } = useParams();
@@ -48,6 +47,7 @@ export function Produit() {
   if (chargement) return <div className="mx-auto h-[70vh] max-w-[1440px] animate-pulse px-4 py-16 lg:px-12"><div className="h-full bg-ligne" /></div>;
   if (!produit) return <EnPreparation titre="Ce produit n'existe pas ou n'est plus en vente" surtitre="Produit introuvable" />;
 
+  const NB_VUES = Math.max(produit.images.length, 1);
   const besoinCouleur = couleurs.length > 0;
   const besoinTaille = tailles.length > 0;
   const variante = varianteDe(produit, besoinTaille ? taille : null, besoinCouleur ? couleur : null);
@@ -104,13 +104,13 @@ export function Produit() {
                   onClick={() => setVue(i)}
                   className={`aspect-[4/5] w-16 overflow-hidden border lg:w-full ${vue === i ? 'border-brun' : 'border-transparent opacity-80 hover:opacity-100'}`}
                 >
-                  <VisuelProduit produit={produit} index={i} couleur={couleur} mention={false} />
+                  <VisuelProduit produit={produit} index={i} couleur={couleur} mention={false} sizes="96px" />
                 </button>
               ))}
             </div>
             <div className="group relative aspect-[4/5] flex-1 overflow-hidden bg-brun">
               <div key={`${vue}-${couleur}`} className="absolute inset-0 animate-apparition">
-                <VisuelProduit produit={produit} index={vue} couleur={couleur} />
+                <VisuelProduit produit={produit} index={vue} couleur={couleur} sizes="(min-width: 1024px) 50vw, 100vw" prioritaire />
               </div>
               <BoutonFavori slug={produit.slug} nom={produit.nom} className="absolute right-4 top-4" />
               {produit.est_demo && <span className="etiquette-demo absolute left-4 top-4 bg-blanc-casse/90 text-encre-douce">Produit de démonstration</span>}
