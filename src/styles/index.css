@@ -76,6 +76,11 @@
     @apply inline-flex items-center rounded-sm border border-dashed border-current px-2 py-0.5 font-ui text-[10px] font-medium uppercase tracking-bouton;
   }
 
+  /* Case de taille épuisée : barrée en diagonale. */
+  .taille-epuisee {
+    background: linear-gradient(to top right, transparent calc(50% - 0.5px), #9a8574 50%, transparent calc(50% + 0.5px)), #f5efe5;
+  }
+
   /* Étoffe de remplacement tant que les photos ne sont pas fournies. */
   .etoffe {
     background-color: #241510;

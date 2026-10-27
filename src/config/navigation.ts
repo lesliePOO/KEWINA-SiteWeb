@@ -8,13 +8,22 @@ export const navigationPrincipale: LienNav[] = [
   { libelle: 'Boutique', chemin: '/boutique' },
   { libelle: 'Collections', chemin: '/collections' },
   { libelle: 'La Maison', chemin: '/a-propos' },
+  { libelle: 'Lookbook', chemin: '/lookbook' },
   { libelle: 'Contact', chemin: '/contact' },
 ];
 
+export const navigationBoutique: LienNav[] = [
+  { libelle: 'Femme', chemin: '/boutique?genre=femme' },
+  { libelle: 'Homme', chemin: '/boutique?genre=homme' },
+  { libelle: 'Nouveautés', chemin: '/boutique?tri=nouveautes' },
+  { libelle: 'Collections', chemin: '/collections' },
+];
+
 export const navigationAide: LienNav[] = [
-  { libelle: 'FAQ et livraison', chemin: '/faq' },
+  { libelle: 'FAQ', chemin: '/faq' },
+  { libelle: 'Livraison', chemin: '/faq#livraison' },
+  { libelle: 'Retours et échanges', chemin: '/faq#retours' },
   { libelle: 'Contact', chemin: '/contact' },
-  { libelle: 'À propos', chemin: '/a-propos' },
 ];
 
 export const navigationLegale: LienNav[] = [

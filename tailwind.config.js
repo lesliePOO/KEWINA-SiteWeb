@@ -41,6 +41,15 @@ export default {
         lente: '640ms',
         scene: '1200ms',
       },
+      keyframes: {
+        apparition: {
+          '0%': { opacity: '0', transform: 'translateY(16px)', clipPath: 'inset(0 0 100% 0)' },
+          '100%': { opacity: '1', transform: 'none', clipPath: 'inset(0 0 0 0)' },
+        },
+      },
+      animation: {
+        apparition: 'apparition 900ms cubic-bezier(0.22, 1, 0.36, 1) both',
+      },
       boxShadow: {
         voile: '0 24px 60px rgba(11, 11, 11, 0.16)',
       },
