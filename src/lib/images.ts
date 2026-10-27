@@ -4,7 +4,7 @@ export function urlImage(url: string, largeur: number, hauteur?: number): string
   const p = new URLSearchParams({ auto: 'format', fit: 'crop', q: '75', w: String(largeur) });
   if (hauteur) {
     p.set('h', String(hauteur));
-    p.set('crop', 'faces,center');
+    p.set('crop', 'faces,entropy');
   }
   return `${url.split('?')[0]}?${p.toString()}`;
 }

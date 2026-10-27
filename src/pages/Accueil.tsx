@@ -70,12 +70,12 @@ function Hero() {
       {DIAPOS.map((d, i) => (
         <div
           key={i}
-          className={`absolute inset-y-0 right-0 -z-10 w-full transition-all duration-scene ease-etoffe lg:w-[72%] ${
+          className={`absolute inset-0 -z-10 transition-all duration-scene ease-etoffe ${
             i === actif ? 'scale-100 opacity-100' : 'scale-[1.04] opacity-0'
           }`}
           aria-hidden="true"
         >
-          <Photo src={d.visuel.src} alt="" ton={d.ton} prioritaire={i === 0} sizes="(min-width: 1024px) 72vw, 100vw" position={d.position} className="h-full w-full" />
+          <Photo src={d.visuel.src} alt="" ton={d.ton} prioritaire={i === 0} sizes="100vw" position={d.position} className="h-full w-full" />
         </div>
       ))}
       {/* Mobile : la photo reste visible en haut, le texte se lit sur le dégradé du bas. */}
@@ -84,7 +84,7 @@ function Hero() {
         className="absolute inset-0 -z-10 hidden lg:block"
         style={{
           background:
-            'linear-gradient(90deg, #0b0b0b 0%, rgba(11,11,11,0.92) 26%, rgba(11,11,11,0.3) 58%, rgba(11,11,11,0.1) 100%), linear-gradient(0deg, rgba(11,11,11,0.85) 0%, rgba(11,11,11,0) 40%)',
+            'linear-gradient(90deg, #0b0b0b 0%, rgba(11,11,11,0.9) 30%, rgba(11,11,11,0.35) 60%, rgba(11,11,11,0.1) 100%), linear-gradient(0deg, rgba(11,11,11,0.85) 0%, rgba(11,11,11,0) 40%)',
         }}
         aria-hidden="true"
       />
