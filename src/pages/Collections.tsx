@@ -13,13 +13,14 @@ const TONS: TonEtoffe[] = ['wax', 'bordeaux', 'terre', 'nuit'];
 const ROMAINS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
 
 /** Récit éditorial propre à chaque collection (texte de la maison, en complément de la description). */
-const RECITS: Record<string, { accroche: string; recit: string }> = {
+const RECITS: Record<string, { accroche: string; recit: string; cadrage?: string }> = {
   heritage: {
     accroche: 'Ce que nos mères nous ont transmis',
     recit:
       "Héritage part du pagne plié dans l'armoire familiale : ses motifs, ses couleurs franches, sa façon de raconter une famille. Nous l'avons recoupé pour aujourd'hui, avec des lignes nettes et des volumes simples, sans rien perdre de sa mémoire.",
   },
   ceremonie: {
+    cadrage: '96% center',
     accroche: 'Pour les jours dont on se souvient',
     recit:
       "Mariages, dots, baptêmes, fins d'année : Cérémonie habille les grands moments. Broderies ton sur ton, tissus qui accrochent la lumière, tombés amples. Des pièces qu'on porte une fois pour l'événement et qu'on garde pour toujours.",
@@ -27,7 +28,10 @@ const RECITS: Record<string, { accroche: string; recit: string }> = {
 };
 
 /** La mention « démonstration » est affichée en étiquette, la description reste lisible. */
-const sansPrefixeDemo = (texte: string | null) => texte?.replace(/^Collection de démonstration\s*:\s*/i, '') ?? null;
+const sansPrefixeDemo = (texte: string | null) => {
+  const t = texte?.replace(/^Collection de démonstration\s*:\s*/i, '').trim();
+  return t ? t.charAt(0).toUpperCase() + t.slice(1) : null;
+};
 
 export function Collections() {
   const { collections, produits, chargement, erreur } = useCatalogue();
@@ -103,7 +107,7 @@ function Chapitre({ collection: c, index: i, pieces }: { collection: Collection;
               <div className="absolute inset-0 transition-transform duration-lente ease-etoffe group-hover:scale-[1.03]">
                 <Parallaxe intensite={0.07}>
                   {c.image_url ? (
-                    <Photo src={c.image_url} alt={c.titre} ton={TONS[i % TONS.length]} sizes="(min-width: 1024px) 58vw, 100vw" className="h-full w-full" />
+                    <Photo src={c.image_url} alt={c.titre} ton={TONS[i % TONS.length]} sizes="(min-width: 1024px) 58vw, 100vw" position={recit?.cadrage ?? 'center'} className="h-full w-full" />
                   ) : (
                     <Etoffe ton={TONS[i % TONS.length]} echelle={1.1} className="h-full w-full" />
                   )}
