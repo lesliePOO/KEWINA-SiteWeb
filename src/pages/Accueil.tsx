@@ -5,6 +5,7 @@ import { useCatalogue } from '../context/CatalogueContext';
 import { CarteProduit } from '../components/produit/CarteProduit';
 import type { TonEtoffe } from '../components/ui/Etoffe';
 import { Photo } from '../components/ui/Photo';
+import { DrapeEtoffe } from '../components/3d/DrapeEtoffe';
 import { visuels, type Visuel } from '../config/visuels';
 import { ChargementGrille, ErreurCatalogue } from '../components/ui/Etats';
 import { useMouvementReduit } from '../lib/mouvement';
@@ -200,6 +201,20 @@ export function Accueil() {
         )}
       </section>
 
+      <section className="zone-nuit relative isolate overflow-hidden bg-noir text-creme" aria-label="Signature KEWINA">
+        <DrapeEtoffe className="h-[460px] w-full sm:h-[540px] lg:h-[620px]" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-noir via-noir/30 to-noir/60 lg:bg-gradient-to-r lg:from-noir lg:via-noir/50 lg:to-transparent" />
+        <div className="pointer-events-none absolute inset-0 mx-auto flex max-w-[1440px] flex-col justify-end gap-5 px-4 pb-12 lg:justify-center lg:px-12 lg:pb-0">
+          <span className="surtitre text-bronze">Signature KEWINA</span>
+          <h2 className="max-w-md font-display text-[38px] font-medium leading-[1.02] lg:text-[56px]">Le wax, sous la lumière</h2>
+          <p className="max-w-sm text-sm leading-relaxed text-sable">
+            Nos pièces naissent d'une étoffe : ses motifs, son tombé, sa façon d'attraper la lumière. Approchez-vous, elle réagit à votre geste.
+          </p>
+          <Link to="/collections" className="lien-souligne pointer-events-auto mt-2 self-start text-creme">Explorer les collections</Link>
+        </div>
+        <span className="pointer-events-none absolute bottom-3 right-4 hidden text-[10px] uppercase tracking-bouton text-sable/70 lg:right-12 lg:block">Étoffe en 3D interactive</span>
+      </section>
+
       <section className="zone-nuit bg-noir text-creme">
         <div className="mx-auto grid max-w-[1440px] lg:grid-cols-[1.1fr_1fr]">
           <div className="relative min-h-[300px] lg:min-h-[420px]">
@@ -214,8 +229,7 @@ export function Accueil() {
               un héritage vivant
             </h2>
             <p className="max-w-md text-sm leading-relaxed text-sable">
-              Chaque pièce KEWINA est le fruit d'un savoir-faire artisanal et d'une passion profonde pour nos racines. Texte à valider
-              par la marque.
+              Chaque pièce KEWINA est le fruit d'un savoir-faire artisanal et d'une passion profonde pour nos racines.
             </p>
             <Link to="/a-propos" className="btn btn-plein self-start">
               Découvrir notre univers <ArrowRight size={16} strokeWidth={1.5} />

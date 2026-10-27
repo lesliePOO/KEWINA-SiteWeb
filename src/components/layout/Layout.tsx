@@ -6,10 +6,12 @@ import { Footer } from './Footer';
 import { NavMobileBas } from './NavMobileBas';
 
 export function Layout() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
+  // Retour en haut à chaque page, sauf lien vers une ancre (#livraison…) gérée par la page.
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (!hash) window.scrollTo(0, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   return (

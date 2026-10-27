@@ -11,7 +11,9 @@ export function BarreAnnonce() {
   return (
     <div className="relative hidden border-b border-ligne-nuit bg-noir text-sable md:block">
       <div className="mx-auto flex max-w-[1440px] items-center justify-center gap-4 px-12 py-2 text-[11px] tracking-wide">
-        <span>Commande assistée via WhatsApp</span>
+        <span>Livraison au Cameroun et à l'international</span>
+        <span className="text-bronze" aria-hidden="true">|</span>
+        <span>Commande via WhatsApp</span>
         {numero && lien && (
           <>
             <span className="text-bronze" aria-hidden="true">|</span>

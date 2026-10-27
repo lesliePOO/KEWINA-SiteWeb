@@ -56,3 +56,31 @@ export async function creerDemande(lignes: LignePanier[], nom: string, ville: st
   if (error) throw new Error(error.message);
   return data as ResultatDemande;
 }
+
+export interface MessageContact {
+  nom: string;
+  email: string;
+  telephone: string;
+  sujet: string;
+  message: string;
+}
+
+/** Enregistre un message du formulaire de contact (écriture seule pour les visiteurs). */
+export async function envoyerMessage(m: MessageContact): Promise<void> {
+  const client = exigerClient();
+  const { error } = await client.from('messages_contact').insert({
+    nom: m.nom.trim(),
+    email: m.email.trim() || null,
+    telephone: m.telephone.trim() || null,
+    sujet: m.sujet.trim(),
+    message: m.message.trim(),
+  });
+  if (error) throw new Error(error.message);
+}
+
+/** Inscription à la lettre d'information. Une adresse déjà inscrite n'est pas une erreur. */
+export async function inscrireLettre(email: string): Promise<void> {
+  const client = exigerClient();
+  const { error } = await client.from('inscriptions_lettre').insert({ email: email.trim().toLowerCase() });
+  if (error && error.code !== '23505') throw new Error(error.message);
+}
