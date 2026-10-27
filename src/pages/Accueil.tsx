@@ -235,7 +235,7 @@ export function Accueil() {
         ) : chargement ? (
           <ChargementGrille nombre={5} colonnes="grid-cols-2 sm:grid-cols-3 lg:grid-cols-5" />
         ) : (
-          <div className="sans-barre -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 lg:-mx-12 lg:gap-8 lg:px-12">
+          <div className="sans-barre -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-2 lg:-mx-12 lg:scroll-px-12 lg:gap-8 lg:px-12">
             {nouveautes.map((p, i) => (
               <Revele key={p.id} delai={i * 90} className="w-[62%] shrink-0 snap-start sm:w-[38%] lg:w-[23%]">
                 <CarteProduit produit={p} compacte />

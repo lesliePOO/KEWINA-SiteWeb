@@ -7,7 +7,9 @@ import { VisuelProduit } from './VisuelProduit';
 import { couleursDe, etatStock, stockTotal } from './outils';
 
 export function CarteProduit({ produit, compacte = false }: { produit: Produit; compacte?: boolean }) {
-  const { seuilStockFaible } = useCatalogue();
+  const { seuilStockFaible, produits } = useCatalogue();
+  // Le badge n'a de sens que s'il distingue : masqué quand la majorité du catalogue est marquée « nouveauté ».
+  const badgeNouveau = produit.nouveaute && produits.filter((p) => p.nouveaute).length <= produits.length / 2;
   const etat = etatStock(stockTotal(produit), seuilStockFaible);
   const couleurs = couleursDe(produit);
 
@@ -29,7 +31,7 @@ export function CarteProduit({ produit, compacte = false }: { produit: Produit; 
         <BoutonFavori slug={produit.slug} nom={produit.nom} className="absolute right-2.5 top-2.5" />
         <div className="absolute left-2.5 top-2.5 flex flex-col items-start gap-1.5">
           {etat === 'epuise' && <span className="bg-carmin px-2 py-0.5 text-[10px] uppercase tracking-bouton text-creme">Épuisé</span>}
-          {etat !== 'epuise' && produit.nouveaute && <span className="bg-blanc-casse/95 px-2 py-0.5 text-[10px] uppercase tracking-bouton text-brun">Nouveau</span>}
+          {etat !== 'epuise' && badgeNouveau && <span className="bg-blanc-casse/95 px-2 py-0.5 text-[10px] uppercase tracking-bouton text-brun">Nouveau</span>}
         </div>
       </div>
       <div className="flex flex-col gap-1 pt-3">

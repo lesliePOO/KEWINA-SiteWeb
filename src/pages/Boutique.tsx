@@ -124,7 +124,9 @@ export function Boutique() {
       ? { lignes: ['La collection', 'Femme'], texte: 'Robes, ensembles et pièces fortes, coupés dans des étoffes choisies.', visuel: visuels.femme, position: 'center 20%' }
       : genre === 'homme'
         ? { lignes: ['La collection', 'Homme'], texte: 'Chemises, kaftans et ensembles : une allure nette, un héritage assumé.', visuel: visuels.homme, position: 'center 20%' }
-        : { lignes: ['Toute', 'la boutique'], texte: 'Nos pièces, entre tradition et modernité. Chaque étoffe a son histoire.', visuel: visuels.tissus, position: 'center 40%' };
+        : genre === 'unisexe'
+          ? { lignes: ['Pièces', 'unisexes'], texte: 'Des pièces pensées pour être partagées, portées par elle comme par lui.', visuel: visuels.hero[2], position: '72% center' }
+          : { lignes: ['Toute', 'la boutique'], texte: 'Nos pièces, entre tradition et modernité. Chaque étoffe a son histoire.', visuel: visuels.tissus, position: 'center 40%' };
 
   // Filtres actifs, affichés en pastilles qu'on retire d'un geste.
   const actifs: { libelle: string; retirer: () => void }[] = [
@@ -248,7 +250,7 @@ export function Boutique() {
           <div className="min-w-0 flex-1">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="font-display text-3xl font-medium lg:text-4xl">{titre}</h2>
+                <h2 className="font-display text-3xl font-medium lg:text-4xl">{genre ? `Les pièces ${titre}` : 'Toutes les pièces'}</h2>
                 <p className="mt-1 text-sm text-encre-douce" aria-live="polite">
                   {resultats.length} produit{resultats.length > 1 ? 's' : ''}
                 </p>
