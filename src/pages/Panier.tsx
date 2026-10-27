@@ -83,7 +83,6 @@ export function Panier() {
                       <p className="text-xs text-encre-douce">
                         {[variante.taille && `Taille : ${variante.taille}`, variante.couleur && `Couleur : ${variante.couleur}`].filter(Boolean).join(' · ')}
                       </p>
-                      {produit.est_demo && <span className="etiquette-demo mt-1 self-start text-encre-douce">Démo</span>}
                       {epuise && <p className="text-sm text-carmin">Épuisé — retirez cet article pour continuer.</p>}
                       {!epuise && ajustees.includes(variante.id) && <p className="text-sm text-stock-faible">Quantité ajustée au stock disponible ({variante.stock}).</p>}
                       {probleme && !epuise && <p className="text-sm text-carmin">Stock insuffisant{probleme.stock !== undefined ? ` (${probleme.stock} disponible${probleme.stock > 1 ? 's' : ''})` : ''}.</p>}

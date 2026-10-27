@@ -43,7 +43,6 @@ export function Collections() {
                     )}
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-noir/90 via-noir/25 to-transparent" />
-                  {c.est_demo && <span className="etiquette-demo absolute left-4 top-4 bg-blanc-casse/90 text-encre-douce">Démo</span>}
                   <div className="absolute inset-x-6 bottom-6 text-creme lg:inset-x-10 lg:bottom-10">
                     <p className="text-xs uppercase tracking-surtitre text-or-lumiere">{n} pièce{n > 1 ? 's' : ''}</p>
                     <h2 className="mt-2 font-display text-4xl font-medium lg:text-5xl">{c.titre}</h2>

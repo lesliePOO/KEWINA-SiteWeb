@@ -26,7 +26,7 @@ const DIAPOS: Diapo[] = [
     action: { libelle: 'Découvrir la collection', vers: '/boutique' },
     ton: 'wax',
     visuel: visuels.hero[0],
-    position: 'center 30%',
+    position: '75% center',
   },
   {
     titre: ["L'élégance", 'a du caractère'],
@@ -34,7 +34,7 @@ const DIAPOS: Diapo[] = [
     action: { libelle: 'Collection Femme', vers: '/boutique?genre=femme' },
     ton: 'terre',
     visuel: visuels.hero[1],
-    position: 'center 20%',
+    position: '70% center',
   },
   {
     titre: ['Des matières,', 'un héritage vivant'],
@@ -42,7 +42,7 @@ const DIAPOS: Diapo[] = [
     action: { libelle: 'Voir les collections', vers: '/collections' },
     ton: 'bordeaux',
     visuel: visuels.hero[2],
-    position: 'center 25%',
+    position: '72% center',
   },
 ];
 
@@ -85,7 +85,7 @@ function Hero() {
         className="absolute inset-0 -z-10 hidden lg:block"
         style={{
           background:
-            'linear-gradient(90deg, #0b0b0b 0%, rgba(11,11,11,0.9) 30%, rgba(11,11,11,0.35) 60%, rgba(11,11,11,0.1) 100%), linear-gradient(0deg, rgba(11,11,11,0.85) 0%, rgba(11,11,11,0) 40%)',
+            'linear-gradient(90deg, rgba(11,11,11,0.85) 0%, rgba(11,11,11,0.45) 32%, rgba(11,11,11,0) 58%), linear-gradient(0deg, rgba(11,11,11,0.6) 0%, rgba(11,11,11,0) 30%)',
         }}
         aria-hidden="true"
       />
@@ -93,7 +93,7 @@ function Hero() {
       <div className="mx-auto grid min-h-[640px] max-w-[1440px] grid-cols-1 px-4 pb-10 pt-64 lg:min-h-[680px] lg:grid-cols-[1fr_auto] lg:px-12 lg:pb-12 lg:pt-28">
         <div className="flex max-w-xl flex-col justify-end gap-6" aria-live="polite">
           <span className="font-display text-sm uppercase tracking-surtitre text-bronze">KEWINA</span>
-          <h1 key={actif} className="animate-apparition font-display text-[46px] font-medium leading-[0.98] sm:text-[60px] lg:text-[76px]">
+          <h1 key={actif} className="animate-apparition font-display text-[48px] font-medium leading-[0.95] sm:text-[64px] lg:text-[92px]">
             {DIAPOS[actif].titre[0]}
             <br />
             {DIAPOS[actif].titre[1]}
@@ -143,7 +143,6 @@ function Hero() {
           </div>
         </div>
       </div>
-      <span className="absolute bottom-3 right-4 text-[10px] uppercase tracking-bouton text-sable/70 lg:right-12">Photo d'illustration — {DIAPOS[actif].visuel.credit} / Unsplash</span>
     </section>
   );
 }
@@ -152,7 +151,7 @@ function BlocGenre({ titre, sousTitre, vers, ton, visuel }: { titre: string; sou
   return (
     <Link to={vers} className="group relative block aspect-[4/5] overflow-hidden sm:aspect-[16/11]">
       <div className="absolute inset-0 transition-transform duration-lente ease-etoffe group-hover:scale-[1.04]">
-        <Photo src={visuel.src} alt={visuel.alt} ton={ton} sizes="(min-width: 640px) 50vw, 100vw" position="center 25%" className="h-full w-full" />
+        <Photo src={visuel.src} alt={visuel.alt} ton={ton} sizes="(min-width: 640px) 50vw, 100vw" position="center 15%" className="h-full w-full" />
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-noir/85 via-noir/20 to-transparent" />
       <div className="absolute bottom-6 left-6 right-6 text-creme lg:bottom-10 lg:left-10">

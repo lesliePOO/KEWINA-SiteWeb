@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { srcSet, urlImage } from '../../lib/images';
+import { estPhotoExterne, srcSet, urlImage } from '../../lib/images';
 import { Etoffe, type TonEtoffe } from './Etoffe';
 
 interface Props {
@@ -8,8 +8,6 @@ interface Props {
   /** Hauteur / largeur souhaitée (1.25 = format 4:5). Sans valeur : image libre recadrée par CSS. */
   ratio?: number;
   sizes?: string;
-  /** Teinte chaude « KEWINA » appliquée aux photos d'illustration pour les accorder au design. */
-  harmoniser?: boolean;
   prioritaire?: boolean;
   /** Étoffe affichée tant que la photo charge ou si elle ne charge pas. */
   ton?: TonEtoffe;
@@ -17,9 +15,11 @@ interface Props {
   position?: string;
 }
 
-export function Photo({ src, alt, ratio, sizes = '100vw', harmoniser = true, prioritaire = false, ton = 'nuit', className = '', position = 'center' }: Props) {
+export function Photo({ src, alt, ratio, sizes = '100vw', prioritaire = false, ton = 'nuit', className = '', position = 'center' }: Props) {
   const [chargee, setChargee] = useState(false);
   const [echec, setEchec] = useState(false);
+  // Les photos externes (en attendant le shooting complet) sont légèrement réchauffées pour s'accorder au reste.
+  const harmoniser = estPhotoExterne(src);
 
   return (
     <div className={`relative overflow-hidden ${className}`}>
@@ -40,7 +40,6 @@ export function Photo({ src, alt, ratio, sizes = '100vw', harmoniser = true, pri
           }`}
         />
       )}
-      {harmoniser && <div className="pointer-events-none absolute inset-0 bg-brun/15 mix-blend-multiply" aria-hidden="true" />}
     </div>
   );
 }

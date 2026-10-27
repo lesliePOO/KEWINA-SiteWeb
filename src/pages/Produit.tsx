@@ -113,7 +113,6 @@ export function Produit() {
                 <VisuelProduit produit={produit} index={vue} couleur={couleur} sizes="(min-width: 1024px) 50vw, 100vw" prioritaire />
               </div>
               <BoutonFavori slug={produit.slug} nom={produit.nom} className="absolute right-4 top-4" />
-              {produit.est_demo && <span className="etiquette-demo absolute left-4 top-4 bg-blanc-casse/90 text-encre-douce">Produit de démonstration</span>}
               <button type="button" onClick={() => setVue((vue + NB_VUES - 1) % NB_VUES)} className="absolute left-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-blanc-casse/90" aria-label="Vue précédente">
                 <ArrowLeft size={18} strokeWidth={1.5} />
               </button>
@@ -199,7 +198,6 @@ export function Produit() {
               {variante && etat === 'epuise' && <p className="text-carmin">Épuisé dans cette combinaison.</p>}
               {variante && etat === 'faible' && <p className="text-stock-faible">Plus que {stockVariante} pièce{stockVariante > 1 ? 's' : ''} disponible{stockVariante > 1 ? 's' : ''}.</p>}
               {variante && etat === 'disponible' && <p className="flex items-center gap-2 text-dispo"><Check size={16} /> Disponible</p>}
-              {produit.est_demo && <p className="text-xs text-encre-douce">Prix et stock de démonstration.</p>}
             </div>
 
             <div className="flex gap-3">

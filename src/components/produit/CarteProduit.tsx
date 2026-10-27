@@ -22,7 +22,6 @@ export function CarteProduit({ produit, compacte = false }: { produit: Produit; 
         </div>
         <BoutonFavori slug={produit.slug} nom={produit.nom} className="absolute right-2.5 top-2.5" />
         <div className="absolute left-2.5 top-2.5 flex flex-col items-start gap-1.5">
-          {produit.est_demo && <span className="etiquette-demo bg-blanc-casse/90 text-encre-douce">Démo</span>}
           {etat === 'epuise' && <span className="bg-carmin px-2 py-0.5 text-[10px] uppercase tracking-bouton text-creme">Épuisé</span>}
         </div>
       </div>
