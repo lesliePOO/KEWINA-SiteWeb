@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-creme font-ui text-brun;
+  }
+  :focus-visible {
+    outline: 2px solid theme('colors.brun');
+    outline-offset: 3px;
+  }
+  .zone-nuit :focus-visible {
+    outline-color: theme('colors.bronze');
+  }
+}
+
+@layer components {
+  .surtitre {
+    @apply font-ui text-xs font-medium uppercase tracking-surtitre;
+  }
+
+  /* Bouton : le fond glisse comme un rideau au survol. */
+  .btn {
+    @apply relative isolate inline-flex min-h-[52px] items-center justify-center gap-3 overflow-hidden border border-current px-8
+      font-ui text-[13px] font-medium uppercase tracking-bouton no-underline transition-colors duration-base ease-etoffe;
+  }
+  .btn::before {
+    content: '';
+    @apply absolute inset-0 -z-10 origin-right scale-x-0 bg-brun transition-transform duration-base ease-rideau;
+  }
+  .btn:hover::before {
+    @apply origin-left scale-x-100;
+  }
+  .btn:hover {
+    @apply text-creme;
+  }
+  .btn-plein {
+    @apply border-brun bg-brun text-creme;
+  }
+  .btn-plein::before {
+    @apply bg-terracotta-encre;
+  }
+
+  .zone-nuit .btn {
+    @apply text-creme;
+  }
+  .zone-nuit .btn::before {
+    @apply bg-creme;
+  }
+  .zone-nuit .btn:hover {
+    @apply text-noir;
+  }
+  .zone-nuit .btn-plein {
+    @apply border-bronze bg-bronze text-noir;
+  }
+  .zone-nuit .btn-plein::before {
+    @apply bg-or-lumiere;
+  }
+
+  .lien-souligne {
+    @apply pb-1.5 font-ui text-[13px] font-medium uppercase tracking-bouton no-underline;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+    transition: background-size 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .lien-souligne:hover {
+    background-size: 30% 1px;
+  }
+
+  /* Étiquette obligatoire sur toute donnée fictive. */
+  .etiquette-demo {
+    @apply inline-flex items-center rounded-sm border border-dashed border-current px-2 py-0.5 font-ui text-[10px] font-medium uppercase tracking-bouton;
+  }
+
+  /* Étoffe de remplacement tant que les photos ne sont pas fournies. */
+  .etoffe {
+    background-color: #241510;
+    background-image:
+      radial-gradient(120% 70% at 30% 20%, rgba(230, 179, 106, 0.35), transparent 55%),
+      repeating-linear-gradient(115deg, rgba(0, 0, 0, 0) 0 38px, rgba(0, 0, 0, 0.28) 38px 64px, rgba(255, 255, 255, 0.04) 64px 80px),
+      linear-gradient(160deg, #3b2418, #120a07);
+  }
+  .etoffe-wax {
+    background-color: #2a120c;
+    background-image:
+      radial-gradient(90% 60% at 30% 15%, rgba(230, 179, 106, 0.28), transparent 60%),
+      repeating-linear-gradient(45deg, rgba(201, 148, 58, 0.22) 0 2px, transparent 2px 22px),
+      repeating-linear-gradient(-45deg, rgba(138, 42, 31, 0.35) 0 2px, transparent 2px 22px),
+      linear-gradient(160deg, #4a1d12, #140806);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
