@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ChevronDown, Search, SlidersHorizontal, X } from 'lucide-react';
+import { ArrowRight, ChevronDown, Search, SlidersHorizontal, X } from 'lucide-react';
 import { useCatalogue } from '../context/CatalogueContext';
 import { CarteProduit } from '../components/produit/CarteProduit';
 import { couleursDe, stockTotal, taillesDe, trierTailles } from '../components/produit/outils';
 import { Photo } from '../components/ui/Photo';
 import { visuels } from '../config/visuels';
+import { Revele } from '../components/ui/Mouvement';
 import { ChargementGrille, ErreurCatalogue, EtatVide } from '../components/ui/Etats';
 import type { Genre, Produit } from '../types/catalogue';
 
@@ -57,6 +58,19 @@ export function Boutique() {
     if (params.get('recherche') === '1') champRecherche.current?.focus();
   }, [params]);
 
+  // Panneau de filtres ouvert : la page derrière ne défile plus ; Échap le ferme.
+  useEffect(() => {
+    if (!panneauOuvert) return;
+    const ancien = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const touche = (e: KeyboardEvent) => e.key === 'Escape' && setPanneauOuvert(false);
+    window.addEventListener('keydown', touche);
+    return () => {
+      document.body.style.overflow = ancien;
+      window.removeEventListener('keydown', touche);
+    };
+  }, [panneauOuvert]);
+
   const maj = (cle: string, valeur: string | null) => {
     const suivant = new URLSearchParams(params);
     suivant.delete('recherche');
@@ -105,6 +119,24 @@ export function Boutique() {
   ];
   const nbFiltres = Object.values(choix).reduce((s, l) => s + l.length, 0) + (dispo ? 1 : 0);
   const titre = genre === 'femme' ? 'Femme' : genre === 'homme' ? 'Homme' : genre === 'unisexe' ? 'Unisexe' : 'Toute la boutique';
+  const entete =
+    genre === 'femme'
+      ? { lignes: ['La collection', 'Femme'], texte: 'Robes, ensembles et pièces fortes, coupés dans des étoffes choisies.', visuel: visuels.femme, position: 'center 20%' }
+      : genre === 'homme'
+        ? { lignes: ['La collection', 'Homme'], texte: 'Chemises, kaftans et ensembles : une allure nette, un héritage assumé.', visuel: visuels.homme, position: 'center 20%' }
+        : { lignes: ['Toute', 'la boutique'], texte: 'Nos pièces, entre tradition et modernité. Chaque étoffe a son histoire.', visuel: visuels.tissus, position: 'center 40%' };
+
+  // Filtres actifs, affichés en pastilles qu'on retire d'un geste.
+  const actifs: { libelle: string; retirer: () => void }[] = [
+    ...choix.categorie.map((v) => ({ libelle: categories.find((c) => c.slug === v)?.nom ?? v, retirer: () => basculer('categorie', v) })),
+    ...choix.collection.map((v) => ({ libelle: collections.find((c) => c.slug === v)?.titre ?? v, retirer: () => basculer('collection', v) })),
+    ...choix.taille.map((v) => ({ libelle: `Taille ${v}`, retirer: () => basculer('taille', v) })),
+    ...choix.couleur.map((v) => ({ libelle: v, retirer: () => basculer('couleur', v) })),
+    ...choix.prix.map((v) => ({ libelle: `${TRANCHES_PRIX.find((t) => t.cle === v)?.libelle ?? v} FCFA`, retirer: () => basculer('prix', v) })),
+    ...(dispo ? [{ libelle: 'En stock', retirer: () => maj('dispo', null) }] : []),
+    ...(q ? [{ libelle: `« ${q} »`, retirer: () => maj('q', null) }] : []),
+  ];
+  const vueLibre = actifs.length === 0 && tri === 'recents';
 
   const filtres = (
     <div className="flex flex-col">
@@ -164,11 +196,20 @@ export function Boutique() {
   return (
     <>
       <section className="zone-nuit relative isolate overflow-hidden bg-noir text-creme">
-        <Photo src={visuels.tissus.src} alt="" ton="terre" prioritaire position="center 40%" className="absolute inset-0 -z-10" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-noir via-noir/70 to-noir/10" />
-        <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-16 lg:px-12 lg:pb-14 lg:pt-24">
-          <h1 className="font-display text-[42px] font-medium leading-none lg:text-6xl">Nos collections</h1>
-          <p className="mt-3 text-sm text-sable lg:text-base">Découvrez nos pièces uniques, entre tradition et modernité.</p>
+        <div key={genre} className="absolute inset-0 -z-10 animate-apparition">
+          <div className="zoom-lent h-full w-full">
+            <Photo src={entete.visuel.src} alt="" ton="terre" prioritaire position={entete.position} className="h-full w-full" />
+          </div>
+        </div>
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-noir via-noir/70 to-noir/0" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-noir/70 to-transparent" />
+        <div className="mx-auto flex min-h-[340px] max-w-[1440px] flex-col justify-end px-4 pb-10 pt-24 lg:min-h-[460px] lg:px-12 lg:pb-16">
+          <span className="surtitre text-bronze">Boutique KEWINA</span>
+          <h1 key={`t-${genre}`} className="mt-4 font-display text-[46px] font-medium leading-[0.95] lg:text-[84px]">
+            <span className="ligne-masque"><span>{entete.lignes[0]}</span></span>
+            <span className="ligne-masque"><span className="italic text-or-lumiere" style={{ animationDelay: '140ms' }}>{entete.lignes[1]}</span></span>
+          </h1>
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-sable lg:text-base">{entete.texte}</p>
         </div>
       </section>
 
@@ -212,14 +253,16 @@ export function Boutique() {
                   {resultats.length} produit{resultats.length > 1 ? 's' : ''}
                 </p>
               </div>
-              <div className="hidden items-center gap-3 lg:flex">
+              <div className="hidden items-center gap-8 lg:flex">
                 {GENRES.map((g) => (
                   <button
                     key={g.cle}
                     type="button"
                     onClick={() => maj('genre', g.cle || null)}
                     aria-pressed={genre === g.cle}
-                    className={`border px-4 py-2 text-xs uppercase tracking-label ${genre === g.cle ? 'border-brun bg-brun text-creme' : 'border-bord-controle'}`}
+                    className={`relative pb-1.5 font-display text-xl transition-colors after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:bg-brun after:transition-transform after:duration-base ${
+                      genre === g.cle ? 'text-brun after:scale-x-100' : 'text-encre-douce after:scale-x-0 hover:text-brun hover:after:scale-x-100'
+                    }`}
                   >
                     {g.libelle}
                   </button>
@@ -270,6 +313,17 @@ export function Boutique() {
               ))}
             </div>
 
+            {actifs.length > 0 && (
+              <div className="mb-6 flex flex-wrap items-center gap-2" aria-label="Filtres actifs">
+                {actifs.map((a) => (
+                  <button key={a.libelle} type="button" onClick={a.retirer} className="flex h-8 items-center gap-1.5 rounded-full bg-brun px-3 text-xs text-creme hover:bg-terracotta-encre" aria-label={`Retirer le filtre ${a.libelle}`}>
+                    {a.libelle} <X size={13} strokeWidth={1.8} />
+                  </button>
+                ))}
+                <button type="button" onClick={toutEffacer} className="ml-1 text-xs text-encre-douce underline underline-offset-4">Tout effacer</button>
+              </div>
+            )}
+
             {erreur ? (
               <ErreurCatalogue />
             ) : chargement ? (
@@ -277,31 +331,52 @@ export function Boutique() {
             ) : resultats.length === 0 ? (
               <EtatVide titre="Aucune pièce ne correspond" texte="Essayez une autre taille, une autre couleur ou retirez un filtre." />
             ) : (
-              <div className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-4 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-12">
-                {resultats.map((p) => <CarteProduit key={p.id} produit={p} />)}
+              <div className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-4 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-14">
+                {resultats.map((p, i) => (
+                  <Fragment key={p.id}>
+                    {/* Respiration éditoriale au milieu du catalogue, quand aucun filtre n'est actif */}
+                    {vueLibre && i === 6 && resultats.length > 7 && <Interlude />}
+                    <Revele delai={(i % 3) * 90}>
+                      <CarteProduit produit={p} />
+                    </Revele>
+                  </Fragment>
+                ))}
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {panneauOuvert && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-creme lg:hidden" role="dialog" aria-modal="true" aria-label="Filtres">
-          <div className="flex items-center justify-between border-b border-ligne px-4 py-3">
+      {/* Filtres mobile : panneau qui glisse depuis le bas */}
+      <div className={`fixed inset-0 z-50 lg:hidden ${panneauOuvert ? '' : 'pointer-events-none'}`} aria-hidden={!panneauOuvert}>
+        <div
+          className={`absolute inset-0 bg-noir/50 transition-opacity duration-base ${panneauOuvert ? 'opacity-100' : 'opacity-0'}`}
+          onClick={() => setPanneauOuvert(false)}
+        />
+        <div
+          className={`absolute inset-x-0 bottom-0 flex max-h-[88vh] flex-col rounded-t-2xl bg-creme shadow-2xl transition-transform duration-base ease-etoffe ${
+            panneauOuvert ? 'translate-y-0' : 'translate-y-full'
+          }`}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Filtres"
+        >
+          <span className="mx-auto mt-3 h-1 w-10 rounded-full bg-ligne" aria-hidden="true" />
+          <div className="flex items-center justify-between border-b border-ligne px-4 pb-3 pt-2">
             <h2 className="font-display text-2xl">Filtres</h2>
-            <button type="button" onClick={() => setPanneauOuvert(false)} className="grid h-11 w-11 place-items-center" aria-label="Fermer les filtres">
+            <button type="button" onClick={() => setPanneauOuvert(false)} className="grid h-11 w-11 place-items-center" aria-label="Fermer les filtres" tabIndex={panneauOuvert ? 0 : -1}>
               <X size={22} strokeWidth={1.5} />
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto px-4">{filtres}</div>
-          <div className="grid grid-cols-2 gap-3 border-t border-ligne p-4">
-            <button type="button" onClick={toutEffacer} className="btn px-4">Effacer</button>
-            <button type="button" onClick={() => setPanneauOuvert(false)} className="btn btn-plein px-4">
+          <div className="flex-1 overflow-y-auto overscroll-contain px-4">{panneauOuvert && filtres}</div>
+          <div className="grid grid-cols-2 gap-3 border-t border-ligne p-4" style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}>
+            <button type="button" onClick={toutEffacer} className="btn px-4" tabIndex={panneauOuvert ? 0 : -1}>Effacer</button>
+            <button type="button" onClick={() => setPanneauOuvert(false)} className="btn btn-plein px-4" tabIndex={panneauOuvert ? 0 : -1}>
               Voir {resultats.length} pièce{resultats.length > 1 ? 's' : ''}
             </button>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }
@@ -340,5 +415,27 @@ function Puce({ actif, onClick, children }: { actif: boolean; onClick: () => voi
     >
       {children}
     </button>
+  );
+}
+
+/** Pause éditoriale glissée dans la grille : le savoir-faire derrière les pièces. */
+function Interlude() {
+  return (
+    <Revele effet="rideau" className="col-span-2 lg:col-span-3">
+      <Link to="/a-propos" className="zone-nuit group relative isolate grid min-h-[260px] overflow-hidden bg-noir text-creme sm:grid-cols-2 lg:min-h-[340px]">
+        <div className="relative min-h-[200px] overflow-hidden">
+          <div className="absolute inset-0 transition-transform duration-lente ease-etoffe group-hover:scale-[1.04]">
+            <Photo src={visuels.savoirFaire.src} alt={visuels.savoirFaire.alt} ton="wax" sizes="(min-width: 640px) 40vw, 100vw" className="h-full w-full" />
+          </div>
+        </div>
+        <div className="flex flex-col justify-center gap-4 p-6 lg:p-12">
+          <span className="surtitre text-bronze">L'atelier</span>
+          <p className="font-display text-[28px] font-medium italic leading-tight lg:text-[40px]">Chaque pièce passe par des mains, pas par une chaîne.</p>
+          <span className="lien-souligne inline-flex items-center gap-2 self-start text-creme">
+            Découvrir la maison <ArrowRight size={14} strokeWidth={1.5} />
+          </span>
+        </div>
+      </Link>
+    </Revele>
   );
 }

@@ -17,12 +17,19 @@ export function CarteProduit({ produit, compacte = false }: { produit: Produit; 
         <div className="absolute inset-0 transition-transform duration-lente ease-etoffe group-hover:scale-[1.04]">
           <VisuelProduit produit={produit} mention={!compacte} />
         </div>
-        <div className="absolute inset-0 opacity-0 transition-opacity duration-base ease-etoffe group-hover:opacity-100">
-          <VisuelProduit produit={produit} index={1} mention={false} />
-        </div>
+        {produit.images.length > 1 && (
+          <div className="absolute inset-0 opacity-0 transition-opacity duration-lente ease-etoffe group-hover:opacity-100">
+            <VisuelProduit produit={produit} index={1} mention={false} />
+          </div>
+        )}
+        {/* Bandeau « Voir la pièce » qui glisse du bas au survol (ordinateur) */}
+        <span className="absolute inset-x-0 bottom-0 hidden translate-y-full items-center justify-center bg-blanc-casse/95 py-3 text-[11px] font-medium uppercase tracking-bouton text-brun transition-transform duration-base ease-rideau group-hover:translate-y-0 lg:flex">
+          Voir la pièce
+        </span>
         <BoutonFavori slug={produit.slug} nom={produit.nom} className="absolute right-2.5 top-2.5" />
         <div className="absolute left-2.5 top-2.5 flex flex-col items-start gap-1.5">
           {etat === 'epuise' && <span className="bg-carmin px-2 py-0.5 text-[10px] uppercase tracking-bouton text-creme">Épuisé</span>}
+          {etat !== 'epuise' && produit.nouveaute && <span className="bg-blanc-casse/95 px-2 py-0.5 text-[10px] uppercase tracking-bouton text-brun">Nouveau</span>}
         </div>
       </div>
       <div className="flex flex-col gap-1 pt-3">
