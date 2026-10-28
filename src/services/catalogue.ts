@@ -32,7 +32,7 @@ export async function chargerCatalogue(): Promise<DonneesCatalogue> {
 
   const liste = ((produits.data ?? []) as unknown as Produit[]).map((p) => ({
     ...p,
-    images: [...(p.images ?? [])].sort((a, b) => a.ordre - b.ordre),
+    images: photosCoherentes([...(p.images ?? [])].sort((a, b) => a.ordre - b.ordre)),
     variantes: (p.variantes ?? []).filter((v) => v.actif),
   }));
 
@@ -83,4 +83,13 @@ export async function inscrireLettre(email: string): Promise<void> {
   const client = exigerClient();
   const { error } = await client.from('inscriptions_lettre').insert({ email: email.trim().toLowerCase() });
   if (error && error.code !== '23505') throw new Error(error.message);
+}
+
+/**
+ * Dès qu'un produit a une photo du shooting KEWINA, les photos d'illustration externes
+ * restantes sont écartées : on ne mélange pas deux univers visuels sur une même fiche.
+ */
+function photosCoherentes<T extends { url: string }>(images: T[]): T[] {
+  const shooting = images.filter((i) => i.url.startsWith('/shooting/'));
+  return shooting.length > 0 ? shooting : images;
 }
